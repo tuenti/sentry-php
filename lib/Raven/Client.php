@@ -691,7 +691,7 @@ class Raven_Client
      */
     protected static function is_http_request()
     {
-        return isset($_SERVER['REQUEST_METHOD']) && PHP_SAPI !== 'cli';
+        return isset($_SERVER['REQUEST_METHOD']);
     }
 
     protected function get_http_data()
