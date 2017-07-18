@@ -1,0 +1,2 @@
+sentry-php TARBZ2 http://artifacts.tuenti.io/ lib/Raven
+sentry-php GIT git@github.com:tuenti/sentry-php.git
