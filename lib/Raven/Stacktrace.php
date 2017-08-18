@@ -262,28 +262,15 @@ class Raven_Stacktrace
             return $frame;
         }
 
-        try {
-            $file = new SplFileObject($filename);
-            $target = max(0, ($lineno - ($context_lines + 1)));
-            $file->seek($target);
-            $cur_lineno = $target+1;
-            while (!$file->eof()) {
-                $line = rtrim($file->current(), "\r\n");
-                if ($cur_lineno == $lineno) {
-                    $frame['line'] = $line;
-                } elseif ($cur_lineno < $lineno) {
-                    $frame['prefix'][] = $line;
-                } elseif ($cur_lineno > $lineno) {
-                    $frame['suffix'][] = $line;
-                }
-                $cur_lineno++;
-                if ($cur_lineno > $lineno + $context_lines) {
-                    break;
-                }
-                $file->next();
+        $file_lines = @file($filename);
+        $line_index = $lineno - 1;
+        if (is_array($file_lines)) {
+            $context_lines_before = min($line_index, $context_lines);
+            $frame['prefix'] = array_slice($file_lines, $line_index - $context_lines_before, $context_lines_before);
+            $frame['suffix'] = array_slice($file_lines, $line_index + 1, $context_lines);
+            if (isset($file_lines[$line_index])) {
+                $frame['line'] = $file_lines[$line_index];
             }
-        } catch (RuntimeException $exc) {
-            return $frame;
         }
 
         return $frame;
