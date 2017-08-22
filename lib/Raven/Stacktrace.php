@@ -51,7 +51,11 @@ class Raven_Stacktrace
                 $context['filename'] = $filename = '[Anonymous function]';
                 $context['lineno'] = 0;
             } else {
-                $context = self::read_source_file($frame['file'], $frame['line'], $trace);
+                $source_file = $frame['file'];
+                if (!empty($app_path) && substr($source_file, 0, 1) !== '/' && file_exists($app_path . $source_file)) {
+                    $source_file = $app_path . $source_file;
+                }
+                $context = self::read_source_file($source_file, $frame['line'], $trace);
                 $abs_path = $frame['file'];
             }
 
